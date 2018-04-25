@@ -1,13 +1,15 @@
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class Network 
 {
-	int num_layers;
-	int[] sizes;
-	double[][] biases;
-	double[][][] weights;
+	private int num_layers;
+	private int[] sizes;
+	private double[][] biases;
+	private double[][][] weights;
 	
-	Network(int[] sizes)
+	public Network(int[] sizes)
 	{
 		num_layers = sizes.length;
 		this.sizes = sizes;
@@ -36,7 +38,7 @@ public class Network
 		}
 	}
 	
-	double[] sigmoid(double[] z)
+	private double[] sigmoid(double[] z)
 	{
 		double[] array = new double[z.length];
 		for (int c = 0; c < array.length; c++)
@@ -46,13 +48,42 @@ public class Network
 		return array;
 	}
 	
-	double[] feedForward(double[] input)
+	private double[] feedForward(double[] input)
 	{
-		for (int c = 0; c < sizes.length - 1; c++)
+		double[][] outputs = new double[num_layers][];
+		outputs[0] = input;
+		for (int layer = 1; layer < num_layers; layer++)
 		{
-			double[] outputs = new double[sizes[c + 1]];
-			for (int i = 0; i < output.length; i++)
+			outputs[layer] = new double[sizes[layer]];
+			for (int neuron = 0; neuron < sizes[layer]; neuron++)
 			{
+				int sum = 0;
+				for (int output = 0; output < sizes[layer - 1]; output++)
+				{
+					sum += outputs[layer - 1][output] * weights[layer][neuron][output];
+				}
+				outputs[layer][neuron] = sum + biases[layer][neuron];
+			}
+		}
+		return outputs[num_layers - 1];
+	}
+	
+	public void SGD(double[][] training_data, int epochs, int mini_batch_size, double eta, double[][] test_data)
+	{
+		double[][] n_test;
+		if (test_data != null)
+		{
+			n_test = test_data;
+		}
+		int n = training_data.length;
+		for (int c = 0; c < epochs; c++)
+		{
+			Collections.shuffle(Arrays.asList(training_data));
+			double[][][] mini_batches = new double[n / mini_batch_size + 1][][];
+			for(int i = 0; i < training_data.length; i++)
+			{
+				int start = i * mini_batch_size;
+				mini_batches[i] = Arrays.copyOfRange(training_data, start, (start + mini_batch_size < training_data.length) ? start + mini_batch_size : training_data.length);
 				
 			}
 		}
