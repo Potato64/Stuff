@@ -64,28 +64,73 @@ public class Network
 				}
 				outputs[layer][neuron] = sum + biases[layer][neuron];
 			}
+			outputs[layer] = sigmoid(outputs[layer]);
 		}
 		return outputs[num_layers - 1];
 	}
 	
 	public void SGD(double[][] training_data, int epochs, int mini_batch_size, double eta, double[][] test_data)
 	{
-		double[][] n_test;
+		int n_test = 0;
 		if (test_data != null)
 		{
-			n_test = test_data;
+			n_test = test_data.length;
 		}
 		int n = training_data.length;
 		for (int c = 0; c < epochs; c++)
 		{
 			Collections.shuffle(Arrays.asList(training_data));
 			double[][][] mini_batches = new double[n / mini_batch_size + 1][][];
-			for(int i = 0; i < training_data.length; i++)
+			for (int i = 0; i * mini_batch_size <= training_data.length; i++)
 			{
 				int start = i * mini_batch_size;
 				mini_batches[i] = Arrays.copyOfRange(training_data, start, (start + mini_batch_size < training_data.length) ? start + mini_batch_size : training_data.length);
-				
+			}
+			for(double[][] mini_batch : mini_batches)
+			{
+				update_mini_batch(mini_batch, eta);
+			}
+			if (test_data != null)
+			{
+				System.out.println("Epoch " + c + ": " + evaluate(test_data) + " / " + n_test);
+			}
+			else
+			{
+				System.out.println("Epoch " + c + " complete");
 			}
 		}
+	}
+	
+	private void update_mini_batch(double[][] mini_batch, double eta)
+	{
+		double[][] nabla_b = new double[biases.length][];
+		for (int c = 0; c < biases.length; c++)
+		{
+			nabla_b[c] = new double[biases[c].length];
+		}
+		double[][] nabla_w = new double[biases.length][];
+		for (int c = 0; c < biases.length; c++)
+		{
+			nabla_w[c] = new double[biases[c].length];
+		}
+		for (int x = 0; x < mini_batch.length; x++)
+		{
+			for(int y = 0; y < mini_batch[x].length; y++)
+			{
+				double[][][] delta_nabla = backprop(x, y);
+				double[][] delta_nabla_b = delta_nabla[0];
+				double[][] delta_nabla_w = delta_nabla[1];
+			}
+		}
+	}
+	
+	private double[][][] backprop(int x, int y)
+	{
+		
+	}
+	
+	private int evaluate(double[][] test_data)
+	{
+		
 	}
 }
