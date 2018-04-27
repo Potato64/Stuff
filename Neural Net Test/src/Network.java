@@ -108,23 +108,21 @@ public class Network
 		{
 			nabla_b[c] = new double[biases[c].length];
 		}
-		double[][] nabla_w = new double[biases.length][];
-		for (int c = 0; c < biases.length; c++)
+		double[][] nabla_w = new double[weights.length][];
+		for (int c = 0; c < weights.length; c++)
 		{
-			nabla_w[c] = new double[biases[c].length];
+			nabla_w[c] = new double[weights[c].length];
 		}
-		for (int x = 0; x < mini_batch.length; x++)
+		for (int c = 0; c < mini_batch.length; c++)
 		{
-			for(int y = 0; y < mini_batch[x].length; y++)
-			{
-				double[][][] delta_nabla = backprop(x, y);
-				double[][] delta_nabla_b = delta_nabla[0];
-				double[][] delta_nabla_w = delta_nabla[1];
-			}
+			double[][][] delta_nabla_values = backprop(mini_batch[c][0], mini_batch[c][1]);
+			double[][] delta_nabla_b = delta_nabla_values[0];
+			double[][] delta_nabla_w = delta_nabla_values[1];
+			for (int i = 0; i < )
 		}
 	}
 	
-	private double[][][] backprop(int x, int y)
+	private double[][][] backprop(double x, double y)
 	{
 		
 	}
